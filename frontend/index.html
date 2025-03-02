@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+</head>
+<body>
+    <h2>Student Registration</h2>
+    <div id="register"></div>
+
+    <script type="module" src="./src/js/register.js"></script>
+
+    <script type="module">
+        async function loadComponent(id, file) {
+            const response = await fetch(`src/pages/${file}`);
+            document.getElementById(id).innerHTML = await response.text();
+        }
+        loadComponent("register", "RegisterForm.html");
+    </script>
+     <script type="module" src="./src/js/router.js"></script>
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
