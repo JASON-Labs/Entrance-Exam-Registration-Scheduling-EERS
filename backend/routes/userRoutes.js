@@ -4,7 +4,7 @@ const db = require('../config/db');
 
 // Register new student
 router.post("/register", async (req, res) => {
-    console.log("Received Data:", req.body);  // Debugging
+      // Debugging
     const { phone, ssc_roll, ssc_board, ssc_passing_year, hsc_roll, hsc_board, hsc_passing_year } = req.body;
 
     // Ensure all fields are coming in correctly
@@ -18,6 +18,7 @@ router.post("/register", async (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         res.status(201).json({ message: "User registered successfully", userId: result.insertId });
+        console.log("Received Data:", req.body);
     });
     // try {
     //     const query = `INSERT INTO users (phone, ssc_roll, ssc_board, ssc_passing_year, hsc_roll, hsc_board, hsc_passing_year) 

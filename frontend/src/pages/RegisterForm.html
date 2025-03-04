@@ -1,13 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <div class="form">
 <form id="registerForm">
-    <input type="text" id="phone" placeholder="Phone Number" required>
-    <input type="text" id="ssc_roll" placeholder="SSC Roll" required>
-    <input type="text" id="ssc_board" placeholder="SSC Board" required>
-    <input type="text" id="ssc_passing_year" placeholder="SSC Passing Year" required>
-    <input type="text" id="hsc_roll" placeholder="HSC Roll" required>
-    <input type="text" id="hsc_board" placeholder="HSC Board" required>
-    <input type="text" id="hsc_passing_year" placeholder="HSC Passing Year" required>
-    <button type="submit" id="registerBtn">Register</button>
+    <div class="heading"><h1>Getting Started</h1></div>
+    <div class="title"><h2>Let's Register Yourself</h2></div>
+    <div class="inputs">
+        <div class="inputContainer">
+            <input type="text" id="phone" placeholder="Phone Number" required>
+        </div>
+        <div class="inputContainer">
+            <input type="text" id="ssc_roll" placeholder="SSC Roll" required>
+        </div>
+        <div class="inputContainer">
+            <input type="text" id="ssc_board" placeholder="SSC Board" required>
+        </div>
+        <div class="inputContainer">
+            <input type="text" id="ssc_passing_year" placeholder="SSC Passing Year" required>
+        </div>
+        <div class="inputContainer">
+            <input type="text" id="hsc_roll" placeholder="HSC Roll" required>
+        </div>
+        <div class="inputContainer">
+            <input type="text" id="hsc_board" placeholder="HSC Board" required>
+        </div>
+        <div class="inputContainer">
+            <input type="text" id="hsc_passing_year" placeholder="HSC Passing Year" required>
+        </div>
+        
+        <button type="submit" id="registerBtn">Register</button>
+    </div>
     <p id="registerMessage"></p>
 </form>
-
+</div>
 <script type="module" src="../js/register.js"></script>
+
+</body>
+</html>
