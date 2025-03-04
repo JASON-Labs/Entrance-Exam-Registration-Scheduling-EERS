@@ -1,81 +1,75 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("registerForm");
-    const message = document.getElementById("registerMessage");
-    const submitBtn = document.getElementById("registerBtn") || { disabled: false, innerText: "" };
+async function waitForElement(selector, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+        const checkInterval = setInterval(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                clearInterval(checkInterval);
+                resolve(element);
+            } else if (Date.now() - startTime > timeout) {
+                clearInterval(checkInterval);
+                reject(new Error(`Timeout: Element ${selector} not found`));
+            }
+        }, 100);
+    });
+}
 
-    if (!form) {
-        console.error("❌ registerForm not found in the DOM!");
-        return;
-    }
+async function initRegisterForm() {
+    try {
+        const form = await waitForElement("#registerForm");
+        const message = document.getElementById("registerMessage");
+        const submitBtn = document.getElementById("registerBtn");
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = {
+                phone: document.getElementById("phone").value.trim(),
+                ssc_roll: document.getElementById("ssc_roll").value.trim(),
+                ssc_board: document.getElementById("ssc_board").value.trim(),
+                ssc_passing_year: document.getElementById("ssc_passing_year").value.trim(),
+                hsc_roll: document.getElementById("hsc_roll").value.trim(),
+                hsc_board: document.getElementById("hsc_board").value.trim(),
+                hsc_passing_year: document.getElementById("hsc_passing_year").value.trim(),
+            };
 
-        // ✅ Form Validation - Ensure all fields are filled
-        const phone = document.getElementById("phone").value.trim();
-        const ssc_roll = document.getElementById("ssc_roll").value.trim();
-        const ssc_board = document.getElementById("ssc_board").value.trim();
-        const ssc_passing_year = document.getElementById("ssc_passing_year").value.trim();
-        const hsc_roll = document.getElementById("hsc_roll").value.trim();
-        const hsc_board = document.getElementById("hsc_board").value.trim();
-        const hsc_passing_year = document.getElementById("hsc_passing_year").value.trim();
-
-        if (!phone || !ssc_roll || !ssc_board || !ssc_passing_year || !hsc_roll || !hsc_board || !hsc_passing_year) {
-            if (message) {
+            if (Object.values(data).some(value => !value)) {
                 message.innerText = "❌ All fields are required!";
                 message.style.color = "red";
+                return;
             }
-            return;
-        }
 
-        const data = { phone, ssc_roll, ssc_board, ssc_passing_year, hsc_roll, hsc_board, hsc_passing_year };
+            submitBtn.disabled = true;
+            submitBtn.innerText = "User Registered Successfully";
 
-        console.log("📤 Sending Data:", data);
+            try {
+                const response = await fetch("http://localhost:5000/api/users/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                });
 
-        // ✅ Disable button to prevent multiple submissions
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Registering...";
-
-        try {
-            const response = await fetch("http://localhost:5000/api/users/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-
-            const result = await response.json();
-            console.log("✅ Server Response:", result);
-
-            if (message) {
+                const result = await response.json();
                 message.innerText = result.message || result.error;
                 message.style.color = response.ok ? "green" : "red";
-            }
 
-            if (response.ok) {
-                alert(result.message);
-
-                // ✅ Save data in session storage (optional)
-                sessionStorage.setItem("registeredPhone", phone);
-
-                // ✅ Redirect to verification page
-                window.history.pushState(null, "", "/verification");
-                handleRoute(); // Load verification page dynamically
-
-                // ✅ Clear form after submission
-                form.reset();
-            } else {
-                alert(result.error);
-            }
-        } catch (error) {
-            console.error("❌ Fetch error:", error);
-            if (message) {
+                if (response.ok) {
+                    sessionStorage.setItem("registeredPhone", data.phone);
+                    window.history.pushState(null, "", "/verification");
+                    handleRoute();
+                    form.reset();
+                }
+            } catch (error) {
+                console.error("❌ Fetch error:", error);
                 message.innerText = "❌ Failed to connect to server.";
                 message.style.color = "red";
             }
-        }
 
-        // ✅ Re-enable button after request completes
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Register";
-    });
-});
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Register";
+        });
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+initRegisterForm();
